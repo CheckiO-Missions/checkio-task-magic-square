@@ -1,27 +1,64 @@
 <p>
-    Task description
+    In mathematics, a <strong>magic square</strong> is an arrangement of numbers
+    (integers in our case) in a square grid, where the numbers in each row, and in
+    each column, and the numbers in the forward and backward main diagonals, all
+    add up to the same number.
 </p>
 
 <p style="text-align: center;">
-    <img class="for_info_only" title="example" src="{{ MEDIA_URL }}/{{ TASK_SLUG }}/example.png" alt="example" width="600px"/>
-    <img class="for_editor_only" title="example" src="{{ MEDIA_URL }}/{{ TASK_SLUG }}/example.png" alt="example" width="380px"/>
+    <img class="for_info_only"
+         title="example"
+         src="{{ MEDIA_URL }}/{{ TASK_SLUG }}/magic-square.png"
+         alt="example"
+         width="325px"/>
+    <img class="for_editor_only"
+         title="example"
+         src="{{ MEDIA_URL }}/{{ TASK_SLUG }}/magic-square.png"
+         alt="example"
+         width="325px"/>
 </p>
 
 <p>
-    Additional info
+    Given not completed magic square (with size from 3 to 5). You should finish it.
+    It must be a <em>normal</em> magic square and contains integers from 1 to n<sup>2</sup>.
+    The square is presented as a list of list with integers. Zero is a empty cell.
+    You should return completed magic square. The task can have several solutions.
+</p>
+<p>
+    You can read about Magic square at <a href="http://en.wikipedia.org/wiki/Magic_square">Wikipedia</a>.
 </p>
 
 <p>
-    <strong>Input: </strong> Type of data.
+    <strong>Input: </strong> Partially filled a magic square. A list of list with integers.
 </p>
 
 <p>
-    <strong>Output: </strong> Type of data.
+    <strong>Output: </strong> Completed magic square. A list of list with integers.
 </p>
 
 <div class="for_info_only">
     <p>
         <strong>Example:</strong>
     </p>
-    <pre class="brush: python">checkio(???) == "???"</pre>
+    <pre class="brush: python">checkio([
+    [2, 7, 6],
+    [9, 5, 1],
+    [4, 3, 0]
+])
+#must return [[2, 7, 6], [9, 5, 1], [4, 3, 8]]
+
+checkio([
+    [0, 0, 0],
+    [0, 5, 0],
+    [0, 0, 0]
+])
+#can return [[2, 7, 6], [9, 5, 1], [4, 3, 8]] or
+# [[4, 9, 2], [3, 5, 7], [8, 1, 6]
+
+checkio([[1, 15, 14, 4],
+         [12, 0, 0, 9],
+         [8, 0, 0, 5],
+         [13, 3, 2, 16]])
+# answer [[1, 15, 14, 4], [12, 6, 7, 9], [8, 10, 11, 5], [13, 3, 2, 16]]
+</pre>
 </div>
