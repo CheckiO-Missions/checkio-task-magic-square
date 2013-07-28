@@ -1,15 +1,13 @@
 import random
+from copy import deepcopy
 
 TESTS = None
-RAND_TESTS = None
 CURRENT_TEST = None
 #options
 RAND_TESTS_QUANTITY = None
-FLOAT_PRECISION = None
 
 def initial_checkio(data):
     global TESTS
-    global RAND_TESTS
     global CURRENT_TEST
     global RAND_TESTS_QUANTITY
     global FLOAT_PRECISION
@@ -19,7 +17,6 @@ def initial_checkio(data):
     RAND_TESTS_QUANTITY = options.get("rand_tests_quantity", 0)
     if RAND_TESTS_QUANTITY <= 0:
         RAND_TESTS_QUANTITY = -1
-    FLOAT_PRECISION = options.get("float_precision", None)
 
     if RAND_TESTS_QUANTITY == -1 and TESTS:
         CURRENT_TEST = TESTS.pop(0)
@@ -30,25 +27,17 @@ def initial_checkio(data):
         else:
             raise DoneTest(1)
 
-    return CURRENT_TEST["input"]
+    return deepcopy(CURRENT_TEST["input"])
 
 
 def checkio(data):
     global TESTS
-    global RAND_TESTS
     global CURRENT_TEST
     global RAND_TESTS_QUANTITY
-    global FLOAT_PRECISION
     CURRENT_TEST["user_answer"] = data
-    answer = CURRENT_TEST["answer"]
 
-    if (FLOAT_PRECISION and
-                        answer - FLOAT_PRECISION <= data <= answer + FLOAT_PRECISION):
-        CURRENT_TEST["result"] = True
-    elif data == CURRENT_TEST["answer"]:
-        CURRENT_TEST["result"] = True
-    else:
-        CURRENT_TEST["result"] = False
+    CURRENT_TEST['result'], CURRENT_TEST['message'] = check_data(data, CURRENT_TEST["input"])
+
     ext_animation(CURRENT_TEST)
     if not CURRENT_TEST["result"]:
         raise FailTest('ERROR')
@@ -62,4 +51,61 @@ def checkio(data):
         else:
             raise DoneTest(1)
 
-    return CURRENT_TEST["input"]
+    return deepcopy(CURRENT_TEST["input"])
+
+MS_ERROR = False, "It's not a magic square."
+TYPE_ERROR = False, "You should return a list of lists with integers."
+SIZE_ERROR = False, "Wrong size of answer."
+NORMAL_MS_ERROR = False, "It's not a normal magic square."
+NOT_BASED_ERROR = False, "Hm, this square is not based on given template."
+
+
+def check_data(user_data, input_data):
+    #check types
+    if isinstance(user_data, list):
+        for row in user_data:
+            if isinstance(row, list):
+                for el in row:
+                    if not isinstance(el, int):
+                        return TYPE_ERROR
+            else:
+                return TYPE_ERROR
+    else:
+        return TYPE_ERROR
+
+    #check sizes
+    N = len(input_data)
+    if len(user_data) == N:
+        for row in user_data:
+            if len(row) != N:
+                return SIZE_ERROR
+    else:
+        return SIZE_ERROR
+
+    #check is it a magic square
+    # line_sum = (N * (N ** 2 + 1)) / 2
+    line_sum = sum(user_data[0])
+    for row in user_data:
+        if sum(row) != line_sum:
+            return MS_ERROR
+    for col in zip(*user_data):
+        if sum(col) != line_sum:
+            return MS_ERROR
+    if sum([user_data[i][i] for i in range(N)]) != line_sum:
+        return MS_ERROR
+    if sum([user_data[i][N - i - 1] for i in range(N)]) != line_sum:
+        return MS_ERROR
+
+    #check is it normal ms
+    good_set = set(range(1, N ** 2 + 1))
+    user_set = set([user_data[i][j] for i in range(N) for j in range(N)])
+    if good_set != user_set:
+        return NORMAL_MS_ERROR
+
+    #check it is the square based on input
+    for i in range(N):
+        for j in range(N):
+            if input_data[i][j] and input_data[i][j] != user_data[i][j]:
+                return NOT_BASED_ERROR
+
+    return True, "All ok."
