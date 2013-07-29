@@ -47,7 +47,7 @@ requirejs(['ext_editor_1', 'jquery_190', 'raphael_210'],
             }
 
             var checkioInput = data.ext["input"];
-//            var rightResult = data.ext["answer"];
+            var codeError = data.ext["error_code"];
             var resultMessage = data.ext["message"];
             var userResult = data.req;
             var result = data.ext["result"];
@@ -69,14 +69,12 @@ requirejs(['ext_editor_1', 'jquery_190', 'raphael_210'],
                 $content.find('.answer').remove();
             }
             //Dont change the code before it
+            if (codeError >= 3){
+                var canvas = new MagicSquareCanvas();
+                canvas.createCanvas($content.find(".explanation")[0], checkioInput, userResult);
+            }
 
-            //Your code here about test explanation animation
-            //$content.find(".explanation").html("Something text for example");
-            //
-            //
-            //
-            //
-            //
+
 
 
             this_e.setAnimationHeight($content.height() + 60);
@@ -137,10 +135,102 @@ requirejs(['ext_editor_1', 'jquery_190', 'raphael_210'],
         var colorGrey1 = "#EBEDED";
 
         var colorWhite = "#FFFFFF";
-        //Your Additional functions or objects inside scope
-        //
-        //
-        //
+
+
+        function MagicSquareCanvas() {
+            var x0 = 10;
+            var y0 = 10;
+            var cellSize = 40;
+            var N;
+            var fullSizeX;
+            var fullSizeY;
+
+
+
+            var fontSize = cellSize * 0.8;
+
+            var attrSquare = {"stroke": colorBlue4, "stroke-width": "2"};
+            var attrLine = {"stroke": colorBlue1, "stroke-width": "2", "arrow-end": "classic"};
+            var attrNumber = {"font-size": fontSize, "font-family": 'Verdana'};
+            var attrSum = {"font-size": fontSize, "font-family": 'Verdana', "stroke": colorBlue2, "fill": colorBlue2};
+
+            var paper;
+            var squareSet;
+
+            this.createCanvas = function(dom, template, square) {
+                N = template.length;
+                fullSizeX = (N + 2.5) * cellSize + x0 * 2;
+                fullSizeY = (N + 1.5) * cellSize + x0 * 2;
+                paper = Raphael(dom, fullSizeX, fullSizeY, 0, 0);
+                for (var i = 0; i < N; i++){
+                    paper.path(Raphael.format("M{0},{1}V{2}",
+                        x0 + cellSize * (i + 1.5),
+                        y0,
+                        y0 + cellSize * (N + 0.5))).attr(attrLine);
+                    paper.path(Raphael.format("M{0},{1}H{2}",
+                        x0 + cellSize,
+                        y0 + cellSize * (i + 0.5),
+                        x0 + cellSize * (N + 1.5))).attr(attrLine);
+                }
+                paper.path(Raphael.format("M{0},{1}L{2},{3}",
+                    x0 + cellSize * (N + 1),
+                    y0,
+                    x0 + cellSize / 2,
+                    y0 + cellSize * (N + 0.5))).attr(attrLine);
+                paper.path(Raphael.format("M{0},{1}L{2},{3}",
+                    x0 + cellSize,
+                    y0,
+                    x0 + cellSize * (N + 1.5),
+                    y0 + cellSize * (N + 0.5))).attr(attrLine);
+                for (i = 0; i < N; i++){
+                    for (var j = 0; j < N; j++){
+                        paper.rect(
+                            x0 + j * cellSize + cellSize,
+                            y0 + i * cellSize,
+                            cellSize,
+                            cellSize
+                        ).attr(attrSquare);
+                        var ts = cellSize * 0.9 / (1 + (String(square[i][j]).length - 1) * 0.5);
+                        var t = paper.text(
+                            x0 + (j + 1.5) * cellSize,
+                            y0 + i * cellSize + cellSize / 2,
+                            square[i][j]
+                        ).attr(attrNumber).attr("font-size", ts);
+                        if (template[i][j] === 0) {
+                            t.attr({"stroke": colorBlue2, "fill": colorBlue2});
+                        }
+                        else if (template[i][j] !== 0 && template[i][j] === square[i][j]) {
+                            t.attr({"stroke": colorBlue3, "fill": colorBlue3});
+                        }
+                        else {
+                            t.attr({"stroke": colorOrange3, "fill": colorOrange3});
+                        }
+                    }
+                }
+                var fs;
+                var sumDiagMain = 0;
+                var sumDiagRev = 0;
+                for (i = 0; i < N; i++) {
+                    var sumRow = 0;
+                    var sumCol = 0;
+                    for (j = 0; j < N; j++) {
+                        sumRow += square[i][j];
+                        sumCol += square[j][i];
+                    }
+                    sumDiagMain += square[i][i];
+                    sumDiagRev += square[i][N - i -1];
+
+                    fs = cellSize * 0.6 / (String(sumRow).length - 1);
+                    paper.text(x0 + cellSize * (N + 2), y0 + cellSize * (i + 0.5), sumRow).attr(attrSum).attr("font-size", fs);
+                    fs = cellSize * 0.6 / (String(sumCol).length - 1);
+                    paper.text(x0 + cellSize * (i + 1.5), y0 + cellSize * (N + 1), sumCol).attr(attrSum).attr("font-size", fs);
+                }
+                fs = cellSize * 0.6 / (String(sumDiagMain).length - 1);
+                paper.text(x0 + cellSize * (N + 2), y0 + cellSize * (N + 1), sumDiagMain).attr(attrSum).attr("font-size", fs);
+                fs = cellSize * 0.6 / (String(sumDiagRev).length - 1);
+                paper.text(x0 + cellSize / 2, y0 + cellSize * (N + 1), sumDiagRev).attr(attrSum).attr("font-size", fs);
+            };
+        }
 
 
     }

@@ -36,7 +36,10 @@ def checkio(data):
     global RAND_TESTS_QUANTITY
     CURRENT_TEST["user_answer"] = data
 
-    CURRENT_TEST['result'], CURRENT_TEST['message'] = check_data(data, CURRENT_TEST["input"])
+    result = check_data(data, CURRENT_TEST["input"])
+    CURRENT_TEST['result'] = result[0]
+    CURRENT_TEST['error_code'] = result[1]
+    CURRENT_TEST['message'] = result[2]
 
     ext_animation(CURRENT_TEST)
     if not CURRENT_TEST["result"]:
@@ -53,11 +56,12 @@ def checkio(data):
 
     return deepcopy(CURRENT_TEST["input"])
 
-MS_ERROR = False, "It's not a magic square."
-TYPE_ERROR = False, "You should return a list of lists with integers."
-SIZE_ERROR = False, "Wrong size of answer."
-NORMAL_MS_ERROR = False, "It's not a normal magic square."
-NOT_BASED_ERROR = False, "Hm, this square is not based on given template."
+TYPE_ERROR = False, 1, "You should return a list of lists with integers."
+SIZE_ERROR = False, 2, "Wrong size of answer."
+MS_ERROR = False, 3, "It's not a magic square."
+NORMAL_MS_ERROR = False, 4, "It's not a normal magic square."
+NOT_BASED_ERROR = False, 5, "Hm, this square is not based on given template."
+ALL_OK = True, 100, "All ok."
 
 
 def check_data(user_data, input_data):
@@ -108,4 +112,4 @@ def check_data(user_data, input_data):
             if input_data[i][j] and input_data[i][j] != user_data[i][j]:
                 return NOT_BASED_ERROR
 
-    return True, "All ok."
+    return ALL_OK
