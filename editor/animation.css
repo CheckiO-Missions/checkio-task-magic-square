@@ -157,5 +157,20 @@ fieldset[disabled] .btn {
     background-color: #eeeeee;
 }
 
+.tryit-content .square {
+    border-collapse: collapse;
+}
+
+.tryit-content .square td {
+    padding: 0;
+}
+
+.tryit-content .tool .square .input-number {
+    width: 30px;
+    margin: 0;
+    padding: 2px;
+    text-align: center;
+}
+
 /* Your CSS */
 /*          */

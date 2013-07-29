@@ -97,20 +97,43 @@ requirejs(['ext_editor_1', 'jquery_190', 'raphael_210'],
 
         ext.set_generate_animation_panel(function (this_e) {
             $tryit = $(this_e.setHtmlTryIt(ext.get_template('tryit'))).find(".tryit-content");
-            //Your code here about tryit animation
-            //
-            //
-            //
-            //
-            //
-            //
+            var $square = $tryit.find(".square");
+            for (var i =0; i < 5; i++) {
+                var $tr = $("<tr></tr>");
+                for(var j = 0; j < 5; j++){
+                    var $td = $("<td></td>").addClass("cell" + i + j);
+                    var $input = $("<input type='text'>");
+                    $input.addClass("input-number");
+                    $input.val(squareTemplate[i][j]);
+                    $td.append($input);
+                    $tr.append($td);
+                }
+                $square.append($tr);
+            }
 
             //run checking
             $tryit.find('.bn-check').click(function (e) {
-                //collect data from your tryit panel
-                var data = 0;
+                var data = [];
+                for (var i = 0; i < 5; i++){
+                    data.push([]);
+                }
 
+                var $inputs = $tryit.find(".input-number");
+
+                $inputs.each(function() {
+                    var $this = $(this);
+                    var cell = $this.parents().eq(0).attr('class');
+                    var row = parseInt(cell[4]);
+                    var col = parseInt(cell[5]);
+                    var numb = parseInt($this.val());
+                    if (isNaN(numb)) {
+                        numb = 0;
+                        $this.val(0);
+                    }
+                    data[row][col] = numb;
+                });
                 //send it for check
+                console.log(data);
                 this_e.sendToConsoleCheckiO(data);
                 //After it will be called set_console_process_ret
                 e.stopPropagation();
@@ -118,6 +141,14 @@ requirejs(['ext_editor_1', 'jquery_190', 'raphael_210'],
             });
 
         });
+
+        var squareTemplate = [
+            [0, 7, 0, 16, 0],
+            [11, 0, 23, 0, 9],
+            [0, 4, 0, 15, 0],
+            [10, 0, 17, 0, 1],
+            [0, 21, 0, 8, 0]
+        ];
 
         var colorOrange4 = "#F0801A";
         var colorOrange3 = "#FA8F00";
