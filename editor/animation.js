@@ -197,10 +197,10 @@ requirejs(['ext_editor_1', 'jquery_190', 'raphael_210'],
                             square[i][j]
                         ).attr(attrNumber).attr("font-size", ts);
                         if (template[i][j] === 0) {
-                            t.attr({"stroke": colorBlue2, "fill": colorBlue2});
+                            t.attr({"stroke": colorBlue3, "fill": colorBlue3});
                         }
                         else if (template[i][j] !== 0 && template[i][j] === square[i][j]) {
-                            t.attr({"stroke": colorBlue3, "fill": colorBlue3});
+                            t.attr({"stroke": colorBlue4, "fill": colorBlue4});
                         }
                         else {
                             t.attr({"stroke": colorOrange3, "fill": colorOrange3});
