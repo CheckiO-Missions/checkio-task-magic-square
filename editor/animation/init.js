@@ -47,10 +47,11 @@ requirejs(['ext_editor_1', 'jquery_190', 'raphael_210'],
             }
 
             var checkioInput = data.ext["input"];
-            var codeError = data.ext["error_code"];
-            var resultMessage = data.ext["message"];
+
             var userResult = data.req;
             var result = data.ext["result"];
+            var codeError = data.ext["result_addon"]["error_code"];
+            var resultMessage = data.ext["result_addon"]["message"];
 
             //if you need additional info from tests (if exists)
             var explanation = data.ext["explanation"];

@@ -1,71 +1,45 @@
-<<<<<<< HEAD
-import random
-from copy import deepcopy
+"""
+CheckiOReferee is a base referee for checking you code.
+    arguments:
+        tests -- the dict contains tests in the specific structure.
+            You can find an example in tests.py.
+        cover_code -- is a wrapper for the user function and additional operations before give data
+            in the user function. You can use some predefined codes from checkio.referee.cover_codes
+        checker -- is replacement for the default checking of an user function result. If given, then
+            instead simple "==" will be using the checker function which return tuple with result
+            (false or true) and some additional info (some message).
+            You can use some predefined codes from checkio.referee.checkers
+        add_allowed_modules -- additional module which will be allowed for your task.
+        add_close_buildins -- some closed buildin words, as example, if you want, you can close "eval"
+        remove_allowed_modules -- close standard library modules, as example "math"
 
-TESTS = None
-CURRENT_TEST = None
-#options
-RAND_TESTS_QUANTITY = None
+checkio.referee.checkers
+    checkers.float_comparison -- Checking function fabric for check result with float numbers.
+        Syntax: checkers.float_comparison(digits) -- where "digits" is a quantity of significant
+            digits after coma.
 
-def initial_checkio(data):
-    global TESTS
-    global CURRENT_TEST
-    global RAND_TESTS_QUANTITY
-    global FLOAT_PRECISION
-    TESTS = data.get("tests", data.get("rand_tests", []))
+checkio.referee.cover_codes
+    cover_codes.unwrap_args -- Your "input" from test can be given as a list. if you want unwrap this
+        before user function calling, then using this function. For example: if your test's input
+        is [2, 2] and you use this cover_code, then user function will be called as checkio(2, 2)
+    cover_codes.unwrap_kwargs -- the same as unwrap_kwargs, but unwrap dict.
 
-    options = data.get("options", {})
-    RAND_TESTS_QUANTITY = options.get("rand_tests_quantity", 0)
-    if RAND_TESTS_QUANTITY <= 0:
-        RAND_TESTS_QUANTITY = -1
+"""
 
-    if RAND_TESTS_QUANTITY == -1 and TESTS:
-        CURRENT_TEST = TESTS.pop(0)
-    else:
-        if RAND_TESTS_QUANTITY and TESTS:
-            CURRENT_TEST = random.choice(TESTS)
-            RAND_TESTS_QUANTITY -= 1
-        else:
-            raise DoneTest(1)
-
-    return deepcopy(CURRENT_TEST["input"])
-
-
-def checkio(data):
-    global TESTS
-    global CURRENT_TEST
-    global RAND_TESTS_QUANTITY
-    CURRENT_TEST["user_answer"] = data
-
-    result = check_data(data, CURRENT_TEST["input"])
-    CURRENT_TEST['result'] = result[0]
-    CURRENT_TEST['error_code'] = result[1]
-    CURRENT_TEST['message'] = result[2]
-
-    ext_animation(CURRENT_TEST)
-    if not CURRENT_TEST["result"]:
-        raise FailTest('ERROR')
-
-    if RAND_TESTS_QUANTITY == -1 and TESTS:
-        CURRENT_TEST = TESTS.pop(0)
-    else:
-        if RAND_TESTS_QUANTITY and TESTS:
-            CURRENT_TEST = random.choice(TESTS)
-            RAND_TESTS_QUANTITY -= 1
-        else:
-            raise DoneTest(1)
-
-    return deepcopy(CURRENT_TEST["input"])
-
-TYPE_ERROR = False, 1, "You should return a list of lists with integers."
-SIZE_ERROR = False, 2, "Wrong size of answer."
-MS_ERROR = False, 3, "It's not a magic square."
-NORMAL_MS_ERROR = False, 4, "It's not a normal magic square."
-NOT_BASED_ERROR = False, 5, "Hm, this square is not based on given template."
-ALL_OK = True, 100, "All ok."
+TYPE_ERROR = False, {"error_code": 1, "message": "You should return a list of lists with integers."}
+SIZE_ERROR = False, {"error_code": 2,
+                     "message": "Wrong size of answer."}
+MS_ERROR = False, {"error_code": 3,
+                   "message": "It's not a magic square."}
+NORMAL_MS_ERROR = False, {"error_code": 4,
+                          "message": "It's not a normal magic square."}
+NOT_BASED_ERROR = False, {"error_code": 5,
+                          "message": "Hm, this square is not based on given template."}
+ALL_OK = True, {"error_code": 100,
+                "message": "All ok."}
 
 
-def check_data(user_data, input_data):
+def check_data(answer_data, user_data):
     #check types
     if isinstance(user_data, list):
         for row in user_data:
@@ -79,7 +53,7 @@ def check_data(user_data, input_data):
         return TYPE_ERROR
 
     #check sizes
-    N = len(input_data)
+    N = len(answer_data)
     if len(user_data) == N:
         for row in user_data:
             if len(row) != N:
@@ -110,44 +84,15 @@ def check_data(user_data, input_data):
     #check it is the square based on input
     for i in range(N):
         for j in range(N):
-            if input_data[i][j] and input_data[i][j] != user_data[i][j]:
+            if answer_data[i][j] and answer_data[i][j] != user_data[i][j]:
                 return NOT_BASED_ERROR
 
     return ALL_OK
-=======
-"""
-CheckiOReferee is a base referee for checking you code.
-    arguments:
-        tests -- the dict contains tests in the specific structure.
-            You can find an example in tests.py.
-        cover_code -- is a wrapper for the user function and additional operations before give data
-            in the user function. You can use some predefined codes from checkio.referee.cover_codes
-        checker -- is replacement for the default checking of an user function result. If given, then
-            instead simple "==" will be using the checker function which return tuple with result
-            (false or true) and some additional info (some message).
-            You can use some predefined codes from checkio.referee.checkers
-        add_allowed_modules -- additional module which will be allowed for your task.
-        add_close_buildins -- some closed buildin words, as example, if you want, you can close "eval"
-        remove_allowed_modules -- close standard library modules, as example "math"
 
-checkio.referee.checkers
-    checkers.float_comparison -- Checking function fabric for check result with float numbers.
-        Syntax: checkers.float_comparison(digits) -- where "digits" is a quantity of significant
-            digits after coma.
-
-checkio.referee.cover_codes
-    cover_codes.unwrap_args -- Your "input" from test can be given as a list. if you want unwrap this
-        before user function calling, then using this function. For example: if your test's input
-        is [2, 2] and you use this cover_code, then user function will be called as checkio(2, 2)
-    cover_codes.unwrap_kwargs -- the same as unwrap_kwargs, but unwrap dict.
-
-"""
 
 from checkio.signals import ON_CONNECT
 from checkio import api
 from checkio.referees.io import CheckiOReferee
-from checkio.referees import cover_codes
-from checkio.referees import checkers
 
 from tests import TESTS
 
@@ -156,12 +101,11 @@ api.add_listener(
     CheckiOReferee(
         tests=TESTS,
         cover_code={
-            'python-27': cover_codes.unwrap_args,  # or None
-            'python-3': cover_codes.unwrap_args
+            'python-27': None,
+            'python-3': None
         },
-        checker=None,  # checkers.float.comparison(2)
+        checker=check_data,
         add_allowed_modules=[],
         add_close_buildins=[],
         remove_allowed_modules=[]
     ).on_ready)
->>>>>>> upstream/master
