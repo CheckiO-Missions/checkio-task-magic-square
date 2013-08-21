@@ -104,8 +104,4 @@ api.add_listener(
             'python-27': None,
             'python-3': None
         },
-        checker=check_data,
-        add_allowed_modules=[],
-        add_close_buildins=[],
-        remove_allowed_modules=[]
-    ).on_ready)
+        checker=check_data).on_ready)
