@@ -35,6 +35,4 @@ nosetests.xml
 .pydevproject
 .idea
 
-info/logo/*.png
-
 .DS_Store
