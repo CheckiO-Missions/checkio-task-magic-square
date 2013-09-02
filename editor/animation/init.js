@@ -98,6 +98,13 @@ requirejs(['ext_editor_1', 'jquery_190', 'raphael_210'],
 
         ext.set_generate_animation_panel(function (this_e) {
             $tryit = $(this_e.setHtmlTryIt(ext.get_template('tryit'))).find(".tryit-content");
+            var squareTemplate = [
+                [0, 7, 0, 16, 0],
+                [11, 0, 23, 0, 9],
+                [0, 4, 0, 15, 0],
+                [10, 0, 17, 0, 1],
+                [0, 21, 0, 8, 0]
+            ];
             var $square = $tryit.find(".square");
             for (var i =0; i < 5; i++) {
                 var $tr = $("<tr></tr>");
@@ -143,13 +150,7 @@ requirejs(['ext_editor_1', 'jquery_190', 'raphael_210'],
 
         });
 
-        var squareTemplate = [
-            [0, 7, 0, 16, 0],
-            [11, 0, 23, 0, 9],
-            [0, 4, 0, 15, 0],
-            [10, 0, 17, 0, 1],
-            [0, 21, 0, 8, 0]
-        ];
+
 
         var colorOrange4 = "#F0801A";
         var colorOrange3 = "#FA8F00";
