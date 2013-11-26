@@ -38,8 +38,12 @@ requirejs(['ext_editor_1', 'jquery_190', 'raphael_210'],
                 console.log("data is undefined");
                 return false;
             }
+
+
+            var checkioInput = data.in;
+
             if (data.error) {
-                $content.find('.call').html('Fail: checkio(' + ext.JSON.encode(data.referee) + ')');
+                $content.find('.call').html('Fail: checkio(' + ext.JSON.encode(checkioInput) + ')');
                 $content.find('.output').html(data.error.replace(/\n/g, ","));
 
                 $content.find('.output').addClass('error');
